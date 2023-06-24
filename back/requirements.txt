@@ -1,0 +1,6 @@
+nose
+sphinx
+fastapi
+uvicorn
+python-multipart
+pydantic
