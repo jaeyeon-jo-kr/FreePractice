@@ -22,8 +22,7 @@ app.add_middleware(
 async def root():
     return {"message": "Hello World"}
 
-@app.post("/upload")
-async def upload(file: UploadFile):
-    contents = await file.read()
-    print(contents)
-    return {"csv content" : file.filename}
+@app.get("/upload")
+async def upload(csv):
+    print(csv)
+    return {"csv content : ": csv}

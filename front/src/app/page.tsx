@@ -7,6 +7,7 @@ import { useDropzone } from 'react-dropzone';
 const Page = () => {
   
   const {acceptedFiles, getRootProps, getInputProps} = useDropzone();
+  const [content, setContent] = useState<String|ArrayBuffer>("");
 
   const files = acceptedFiles.map((file:File) => (
     <li key={file.name}>
@@ -14,14 +15,23 @@ const Page = () => {
     </li>
   ));
 
-  const uploadCsv = () => {
-    const file = acceptedFiles[0];
-    const formData = new FormData();
-    formData.append('file', file);
-    fetch("http://localhost:8000/upload",  
+  const readCsv = () => {
+    const reader = new FileReader();
+    reader.addEventListener("load", (event) => {
+      uploadCsv(reader.result)
+    })
+    reader.readAsText(acceptedFiles[0])
+  }
+
+  const createURL = (csvContent:any) => {
+    return "http://localhost:8000/upload?csv=" + csvContent
+  }
+
+  const uploadCsv = (csvContent:any) => {
+    const url = createURL(csvContent)
+    fetch(url,  
       {
-        method:"POST",
-        body: formData,
+        method:"GET"
       }
     )
     .then(res=>console.debug("file uploaded :",res))
@@ -31,7 +41,7 @@ const Page = () => {
   const clickUploadCsv = () => {
     if(acceptedFiles[0])
     { 
-      uploadCsv() 
+      readCsv()
     }
   }
 
